@@ -8,8 +8,9 @@ import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import React from "react";
 import Chart from "./Chart";
-import Deposits from "./Deposits";
+import Controller from "./Controller";
 import Orders from "./Orders";
+import Status from "./Status";
 import TitleBar from "./TitleBar";
 
 function Copyright() {
@@ -71,11 +72,19 @@ export default function Dashboard() {
                 <Chart />
               </Paper>
             </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
+            <Grid container spacing={3}>
+              {/* Drone Status */}
+              <Grid item xs={12} md={4} lg={3}>
+                <Paper className={fixedHeightPaper}>
+                  <Status />
+                </Paper>
+              </Grid>
+              {/* Drone Controller */}
+              <Grid item xs={12} md={4} lg={3}>
+                <Paper className={fixedHeightPaper}>
+                  <Controller />
+                </Paper>
+              </Grid>
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12}>
