@@ -35,6 +35,10 @@ app.get("*", (req, res) => {
 io.on("connection", (socket) => {
   console.log("a user connected");
   setInterval(() => socket.emit("FromAPI", "Ready"), 3000);
+
+  socket.on("command", (obj: {command: string}) => {
+    console.log(`got command ${obj.command}`);
+  });
 });
 
 http.listen(ioPort, () => {

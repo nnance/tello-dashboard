@@ -1,3 +1,4 @@
+import socketIOClient from "socket.io-client";
 import { decodeDeposits } from "../structs/deposits";
 import { IOrder } from "../structs/orders";
 import { ISale } from "../structs/sales";
@@ -28,3 +29,11 @@ export async function getData(path: string): Promise<string> {
   }
   return results;
 }
+
+// TODO: replace global with React Provider Pattern
+let globalClient: SocketIOClient.Socket;
+
+export const getSocketIOClient = () => {
+  globalClient = globalClient || socketIOClient("http://127.0.0.1:4001");
+  return globalClient;
+};

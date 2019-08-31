@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import React from "react";
-import socketIOClient from "socket.io-client";
+import { getSocketIOClient } from "../api";
 import Title from "./Title";
 
 interface IDroneState {
@@ -10,8 +9,7 @@ interface IDroneState {
 export default function Controller() {
     const [data, setData] = React.useState<IDroneState>();
     React.useEffect(() => {
-      const socket = socketIOClient("http://127.0.0.1:4001");
-      socket.on("FromAPI", (status: string) => setData({ status }));
+      getSocketIOClient().on("FromAPI", (status: string) => setData({ status }));
     }, []);
 
     return (
