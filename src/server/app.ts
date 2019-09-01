@@ -1,11 +1,10 @@
 import cookieParser from "cookie-parser";
-import { Socket } from "dgram";
 import express from "express";
 import { createServer } from "http";
 import logger from "morgan";
 import * as path from "path";
 import socketio from "socket.io";
-import { Direction, droneFactory, IDrone } from "tello-api-node";
+import { droneFactory, IFlightController } from "tello-api-node";
 
 import depositsRouter from "./routes/deposits";
 import ordersRouter from "./routes/orders";
@@ -15,8 +14,6 @@ const app = express();
 const http = createServer(app);
 const io = socketio(http);
 const ioPort = 4001;
-
-let drone: IDrone;
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -36,35 +33,62 @@ app.get("*", (req, res) => {
 });
 
 // tslint:disable:no-console
+const connectToDrone = async (socket: socketio.Socket) => {
+  try {
+    socket.emit("status", "Connecting");
+    const drone = await droneFactory(console.log.bind(console));
+    socket.emit("status", "Ready");
+    return drone;
+  } catch (error) {
+    socket.emit("status", "Not connected");
+    return undefined;
+  }
+};
+
 io.on("connection", async (socket) => {
+  let drone: IFlightController;
+  let timeoutId: NodeJS.Timeout;
+
+  const connectWithRetry = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    return connectToDrone(socket).then((result) => {
+      if (!result) {
+        console.log("unable to connect to Drone");
+        timeoutId = setTimeout(() => {
+          console.log("timed out waiting on Drone");
+          connectWithRetry();
+        }, 15000);
+      } else {
+        drone = result;
+      }
+    });
+  };
+
   console.log("a user connected");
+  connectWithRetry();
 
   socket.on("command", async (obj: {command: string}) => {
     console.log(`got command ${obj.command}`);
-    if (obj.command === "connect") {
-      try {
-        drone = await droneFactory(console.log.bind(console));
-        socket.emit("status", "Ready");
-      } catch (error) {
-        socket.emit("status", "Connection error!");
-      }
-    }
-
     if (drone) {
-      if (obj.command === "takeoff") {
-        socket.emit("status", "Moving");
-        await drone.takeOff();
-        socket.emit("Ready");
-      } else if (obj.command === "land") {
-        socket.emit("status", "Moving");
-        await drone.land();
-        socket.emit("Ready");
-      } else if (obj.command === "disconnect") {
+      try {
+        if (obj.command === "takeoff") {
+          socket.emit("status", "Moving");
+          await drone.takeOff();
+          socket.emit("Ready");
+        } else if (obj.command === "land") {
+          socket.emit("status", "Moving");
+          await drone.land();
+          socket.emit("Ready");
+        }
+      } catch (error) {
         drone.disconnect();
-        socket.emit("disconnected");
+        drone = undefined;
       }
     } else {
       console.log("Drone not initialized");
+      connectWithRetry();
     }
   });
 });
