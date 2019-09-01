@@ -38,20 +38,30 @@ app.get("*", (req, res) => {
 // tslint:disable:no-console
 io.on("connection", async (socket) => {
   console.log("a user connected");
-  try {
-    drone = await droneFactory(console.log.bind(console));
-    socket.emit("FromAPI", "Ready");
-  } catch (error) {
-    socket.emit("FromAPI", "Connection error!");
-  }
 
-  socket.on("command", (obj: {command: string}) => {
+  socket.on("command", async (obj: {command: string}) => {
     console.log(`got command ${obj.command}`);
+    if (obj.command === "connect") {
+      try {
+        drone = await droneFactory(console.log.bind(console));
+        socket.emit("status", "Ready");
+      } catch (error) {
+        socket.emit("status", "Connection error!");
+      }
+    }
+
     if (drone) {
       if (obj.command === "takeoff") {
-        drone.takeOff();
+        socket.emit("status", "Moving");
+        await drone.takeOff();
+        socket.emit("Ready");
       } else if (obj.command === "land") {
-        drone.land();
+        socket.emit("status", "Moving");
+        await drone.land();
+        socket.emit("Ready");
+      } else if (obj.command === "disconnect") {
+        drone.disconnect();
+        socket.emit("disconnected");
       }
     } else {
       console.log("Drone not initialized");

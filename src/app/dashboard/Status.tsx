@@ -9,7 +9,7 @@ interface IDroneState {
 export default function Controller() {
     const [data, setData] = React.useState<IDroneState>();
     React.useEffect(() => {
-      getSocketIOClient().on("FromAPI", (status: string) => setData({ status }));
+      getSocketIOClient().on("status", (status: string) => setData({ status }));
     }, []);
 
     return (
