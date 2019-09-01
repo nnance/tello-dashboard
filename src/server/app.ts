@@ -5,7 +5,7 @@ import { createServer } from "http";
 import logger from "morgan";
 import * as path from "path";
 import socketio from "socket.io";
-import { droneFactory } from "tello-api-node";
+import { Direction, droneFactory, IDrone } from "tello-api-node";
 
 import depositsRouter from "./routes/deposits";
 import ordersRouter from "./routes/orders";
@@ -36,16 +36,14 @@ app.get("*", (req, res) => {
 });
 
 // tslint:disable:no-console
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("a user connected");
-  // droneFactory(console.log)
-  //   .then((result) => {
-  //     drone = result;
-  //     socket.emit("FromAPI", "Ready");
-  //   })
-  //   .catch(() => {
-  //     socket.emit("FromAPI", "Unable to connect");
-  //   });
+  try {
+    drone = await droneFactory(console.log.bind(console));
+    socket.emit("FromAPI", "Ready");
+  } catch (error) {
+    socket.emit("FromAPI", "Connection error!");
+  }
 
   socket.on("command", (obj: {command: string}) => {
     console.log(`got command ${obj.command}`);
@@ -55,6 +53,8 @@ io.on("connection", (socket) => {
       } else if (obj.command === "land") {
         drone.land();
       }
+    } else {
+      console.log("Drone not initialized");
     }
   });
 });
@@ -62,29 +62,5 @@ io.on("connection", (socket) => {
 http.listen(ioPort, () => {
   console.log(`listening on *:${ioPort}`);
 });
-
-export enum Direction {
-  left = "l",
-  right = "r",
-  forward = "f",
-  back = "b",
-}
-
-interface IDrone {
-  back: (cm: number) => Promise<Socket>;
-  disconnect: () => void;
-  down: (cm: number) => Promise<Socket>;
-  emergency: () => Promise<Socket>;
-  flip: (direction: Direction) => Promise<Socket>;
-  forward: (cm: number) => Promise<Socket>;
-  land: () => Promise<Socket>;
-  left: (cm: number) => Promise<Socket>;
-  right: (cm: number) => Promise<Socket>;
-  rotateClockwise: (degrees: number) => Promise<Socket>;
-  rotateCounterClockwise: (degrees: number) => Promise<Socket>;
-  stop: () => Promise<Socket>;
-  takeOff: () => Promise<Socket>;
-  up: (cm: number) => Promise<Socket>;
-}
 
 module.exports = app;
