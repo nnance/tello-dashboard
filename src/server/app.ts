@@ -34,13 +34,14 @@ app.get("*", (req, res) => {
 
 // tslint:disable:no-console
 const connectToDrone = async (socket: socketio.Socket) => {
+
+  const listener = (msg: string) => socket.emit("status", msg);
+
   try {
-    socket.emit("status", "Connecting");
-    const drone = await droneFactory(console.log.bind(console));
-    socket.emit("status", "Ready");
+    const drone = await droneFactory(console.log.bind(console), listener);
     return drone;
   } catch (error) {
-    socket.emit("status", "Not connected");
+    listener("not connected");
     return undefined;
   }
 };
@@ -74,13 +75,16 @@ io.on("connection", async (socket) => {
     if (drone) {
       try {
         if (obj.command === "takeoff") {
-          socket.emit("status", "Moving");
           await drone.takeOff();
-          socket.emit("Ready");
         } else if (obj.command === "land") {
-          socket.emit("status", "Moving");
           await drone.land();
-          socket.emit("Ready");
+        } else if (obj.command === "start") {
+          await drone.takeOff();
+          await drone.forward(120);
+          await drone.rotateClockwise(180);
+          await drone.forward(120);
+          await drone.rotateClockwise(180);
+          await drone.land();
         }
       } catch (error) {
         drone.disconnect();

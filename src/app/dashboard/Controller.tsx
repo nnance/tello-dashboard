@@ -20,10 +20,9 @@ export default function Controller() {
   return (
     <React.Fragment>
       <Title>Flight Controls</Title>
-      {/* <Button color="primary" variant="contained" className={classes.buttonContext} onClick={sendCommand("connect")}>Connect</Button> */}
       <Button color="primary" variant="contained" className={classes.buttonContext} onClick={sendCommand("takeoff")}>Take Off</Button>
       <Button color="primary" variant="contained" className={classes.buttonContext} onClick={sendCommand("land")}>Land</Button>
-      {/* <Button color="primary" variant="contained" className={classes.buttonContext} onClick={sendCommand("disconnect")}>Disconnect</Button> */}
+      <Button color="primary" variant="contained" className={classes.buttonContext} onClick={sendCommand("start")}>Start</Button>
     </React.Fragment>
   );
 }
