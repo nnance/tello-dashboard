@@ -9,7 +9,7 @@ import clsx from "clsx";
 import React from "react";
 import Chart from "./Chart";
 import Controller from "./Controller";
-import Orders from "./Orders";
+import Orders from "./StateLog";
 import Status from "./Status";
 import TitleBar from "./TitleBar";
 

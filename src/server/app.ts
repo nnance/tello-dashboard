@@ -6,7 +6,6 @@ import * as path from "path";
 import socketio from "socket.io";
 import { droneFactory, IFlightController } from "tello-api-node";
 
-import depositsRouter from "./routes/deposits";
 import ordersRouter from "./routes/orders";
 import salesRouter from "./routes/sales";
 
@@ -25,7 +24,6 @@ app.use(express.static(path.join(__dirname, "../")));
 
 app.use("/orders", ordersRouter);
 app.use("/sales", salesRouter);
-app.use("/deposits", depositsRouter);
 
 // Handles any requests that don't match the ones above
 app.get("*", (req, res) => {
@@ -36,9 +34,10 @@ app.get("*", (req, res) => {
 const connectToDrone = async (socket: socketio.Socket) => {
 
   const listener = (msg: string) => socket.emit("status", msg);
+  const stateListener = (state: {}) => socket.emit("state", state);
 
   try {
-    const drone = await droneFactory(console.log.bind(console), listener);
+    const drone = await droneFactory(console.log, listener, stateListener);
     return drone;
   } catch (error) {
     listener("not connected");
