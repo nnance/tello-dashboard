@@ -11,6 +11,7 @@ import Chart from "./Chart";
 import Controller from "./Controller";
 import Orders from "./StateLog";
 import Status from "./Status";
+import TempChart from "./TempChart";
 import TitleBar from "./TitleBar";
 
 function Copyright() {
@@ -70,6 +71,12 @@ export default function Dashboard() {
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
                 <Chart />
+              </Paper>
+            </Grid>
+            {/* TempChar */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={fixedHeightPaper}>
+                <TempChart />
               </Paper>
             </Grid>
             <Grid container spacing={3}>
