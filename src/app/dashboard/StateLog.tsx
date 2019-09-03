@@ -25,8 +25,12 @@ export default function StateLog() {
             <TableCell>Battery</TableCell>
             <TableCell>Temp</TableCell>
             <TableCell>Height</TableCell>
-            <TableCell>Flight Time</TableCell>
-            <TableCell>Motor Time</TableCell>
+            <TableCell>Accel X</TableCell>
+            <TableCell>Accel Y</TableCell>
+            <TableCell>Accel Z</TableCell>
+            <TableCell>Speed X</TableCell>
+            <TableCell>Speed Y</TableCell>
+            <TableCell>Speed Z</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -35,8 +39,12 @@ export default function StateLog() {
               <TableCell>{row.bat}</TableCell>
               <TableCell>{row.temph}</TableCell>
               <TableCell>{row.h}</TableCell>
-              <TableCell>{row.tof}</TableCell>
-              <TableCell>{row.time}</TableCell>
+              <TableCell>{row.agx}</TableCell>
+              <TableCell>{row.agy}</TableCell>
+              <TableCell>{row.agz}</TableCell>
+              <TableCell>{row.vgx}</TableCell>
+              <TableCell>{row.vgy}</TableCell>
+              <TableCell>{row.vgz}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -7,11 +7,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import React from "react";
+import AccelConatiner from "./Accel";
 import Chart from "./Chart";
 import Controller from "./Controller";
+import SpeedConatiner from "./Speed";
 import Orders from "./StateLog";
+import StatsConatiner from "./Stats";
 import Status from "./Status";
-import TempChart from "./TempChart";
 import TitleBar from "./TitleBar";
 
 function Copyright() {
@@ -67,16 +69,28 @@ export default function Dashboard() {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
+            {/* stats */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={fixedHeightPaper}>
+                <StatsConatiner />
+              </Paper>
+            </Grid>
+            {/* accel */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={fixedHeightPaper}>
+                <AccelConatiner />
+              </Paper>
+            </Grid>
+            {/* speed */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={fixedHeightPaper}>
+                <SpeedConatiner />
+              </Paper>
+            </Grid>
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
                 <Chart />
-              </Paper>
-            </Grid>
-            {/* TempChar */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <TempChart />
               </Paper>
             </Grid>
             <Grid container spacing={3}>
