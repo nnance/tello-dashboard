@@ -1,6 +1,4 @@
 import socketIOClient from "socket.io-client";
-import { decodeDeposits } from "../structs/deposits";
-import { IOrder } from "../structs/orders";
 import { ISale } from "../structs/sales";
 
 export function decode<T>(json: string) {
@@ -8,8 +6,6 @@ export function decode<T>(json: string) {
 }
 
 export const getSales = () => getData("/sales").then((json) => decode<ISale[]>(json));
-export const getDeposits = () => getData("/deposits").then((json) => decodeDeposits(json));
-export const getOrders = ()  => getData("/orders").then((json) => decode<IOrder[]>(json));
 
 export async function callApi<T>(path: string): Promise<T[]> {
     const response = await fetch(path);

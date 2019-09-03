@@ -6,7 +6,6 @@ import * as path from "path";
 import socketio from "socket.io";
 import { droneFactory, IFlightController } from "tello-api-node";
 
-import ordersRouter from "./routes/orders";
 import salesRouter from "./routes/sales";
 
 const app = express();
@@ -22,7 +21,6 @@ app.use(cookieParser());
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, "../")));
 
-app.use("/orders", ordersRouter);
 app.use("/sales", salesRouter);
 
 // Handles any requests that don't match the ones above

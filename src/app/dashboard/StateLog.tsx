@@ -4,7 +4,6 @@ import { ITelloState } from "../../structs/telloState";
 import { getSocketIOClient } from "../api";
 import Title from "./Title";
 
-// TODO: rename orders
 export default function StateLog() {
   const [rows, setRows] = React.useState<ITelloState[]>([]);
   React.useEffect(() => {
